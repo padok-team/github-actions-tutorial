@@ -236,7 +236,7 @@ repository, and not into `padok-team`'s. Once the pull request is created, the
 workflow will trigger and Github will display its progress on the pull request's
 page:
 
-`TODO: ADD SCREENSHOT`
+![failing tests](screenshots/failing-tests.png)
 
 Since you introduced a breaking change, the unit tests are failing and your
 workflow as well. Github displays this prominently, so developers are aware of
@@ -253,7 +253,7 @@ git push
 Once the push is through, Github will trigger the workflow again. This time, it
 will pass.
 
-`TODO: ADD SCREENSHOT`
+![successful tests](screenshots/successful-tests.png)
 
 You can merge your pull request into the master branch, confident that your
 awesome feature does not introduce a breaking change.
