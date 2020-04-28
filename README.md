@@ -57,8 +57,8 @@ The `manifests/` directory contains Kubernetes resource specifications and a
 The `foobar` package contains unit tests. A good practice is to run unit tests
 on all pull requests and on every commit to the master branch.
 
-Write your Github Actions **workflow** to the `.github/workflows/workflow.yml`
-file in your repository. Start with a name for your workflow:
+Create a `.github/workflows/workflow.yml` file in your repository for your
+GitHub Actions **workflow**. In the file, start with a name:
 
 ```yaml
 name: main-worklfow
@@ -97,9 +97,9 @@ jobs:
 ```
 
 Jobs contain a list of **steps**, which are executed consecutively. Often, the
-first step is to check out the source code. To do this, use an **action**
-provided by Github, called `actions/checkout`. To use this action, fill in the
-`uses` field of the first step:
+first step is to clone your repository to use the source code it contains. To do
+this, use an **action** provided by Github, called `actions/checkout`. To use
+this action, fill in the `uses` field of the first step:
 
 ```yaml
 jobs:
@@ -265,6 +265,18 @@ awesome feature does not introduce a breaking change.
 Now that your application is fully tested, time to package it as a container
 image, and then push that image to a container registry like DockerHub.
 
+> You need a DockerHub account for this step. The image repository will
+> automatically be created when your workflow pushes the first image. The
+> repository should be public, otherwise Kubernetes will not be able to pull any
+> images to deploy without credentials.
+
+Go back to the master branch to keep working on your workflow:
+
+```bash
+git checkout master
+git pull
+```
+
 Add a second job to the workflow, called `build-and-release`. This job also runs
 on Ubuntu and starts by checking out your source code:
 
@@ -337,7 +349,7 @@ Commit the updated worflow to the master branch and push the change to Github:
 git checkout master
 git pull
 git add .github/workflows/workflow.yml
-git commit -m 'And build-and-release job to workflow'
+git commit -m 'Add build-and-release job to workflow'
 git push
 ```
 
@@ -360,53 +372,16 @@ kubectl create serviceaccount github-actions --namespace default
 kubectl create rolebinding github-actions --clusterrole edit --serviceaccount default:github-actions
 ```
 
-Next, you need to fetch the service account's authentication token. The commands
-below do this for you, since this isn't the point of this tutorial:
+Next, you need to fetch the service account's authentication token and build a
+`kubectl` configuration file. The commands below do this for you, since this
+isn't the point of this tutorial:
 
 ```bash
-SA_SECRET_NAME=$(kubectl get serviceaccount github-actions --namespace default --output go-template='{{ (index .secrets 0).name }}')
-kubectl get secret $SA_SECRET_NAME --namespace default --output go-template='{{ index .data "ca.crt" }}' | base64 --decode > kubeconfig-ca.crt
-KUBECONFIG_TOKEN=$(kubectl get secret $SA_SECRET_NAME --namespace default --output go-template='{{ .data.token }}' | base64 --decode)
+scripts/generate-kubeconfig.sh
 ```
 
-You will also need the IP address and port of the Kubernetes API server for your
-cluster. This command fetches it from your `kubectl` configuration:
-
-```bash
-KUBECONFIG_SERVER=$(kubectl config view --minify --output go-template='{{ (index .clusters 0).cluster.server }}')
-```
-
-The `kubeconfig` file will also need to contain the public key of the cluster's
-certificate authority. The command below writes this certificate to the
-`kubeconfig-ca.crt` file:
-
-```bash
-kubectl get secret $SA_SECRET_NAME --namespace default --output go-template='{{ index .data "ca.crt" }}' | base64 --decode > kubeconfig-ca.crt
-```
-
-You are now ready to create the `kubectl` configuration file:
-
-```bash
-kubectl --kubeconfig kubeconfig.yml config set-cluster production --server=$KUBECONFIG_SERVER --certificate-authority kubeconfig-ca.crt --embed-certs=true
-kubectl --kubeconfig kubeconfig.yml config set-credentials github-actions --token $KUBECONFIG_TOKEN
-kubectl --kubeconfig kubeconfig.yml config set-context github-actions-production --cluster production --user github-actions --namespace default
-kubectl --kubeconfig kubeconfig.yml config use-context github-actions-production
-```
-
-This file contains credentials, so don't it to your repository. Instead, add
-another secret to your Github repository, called `KUBECONFIG`, containing the
-base64-encoded contents of the file we just built. Copy the output of this
-command to use as the value of the new secret:
-
-```bash
-base64 --input kubeconfig.yml
-```
-
-You can delete the temporary files generated during this step:
-
-```bash
-rm kubeconfig.yml kubeconfig-ca.crt
-```
+Add another secret to your Github repository, called `KUBECONFIG`, containing
+the base64-encoded string printed by the script you just ran.
 
 ## Step 7: Automatically deploy to Kubernetes
 
