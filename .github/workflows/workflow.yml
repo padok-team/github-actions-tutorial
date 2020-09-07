@@ -1,13 +1,8 @@
 env:
   IMAGE_REPOSITORY: musashisakamoto/foobar
+  KUBECTL_VERSION: "1.14.10"
 name: main-workflow
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: push
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -40,3 +35,20 @@ jobs:
           repository: ${{ env.IMAGE_REPOSITORY }}
           tag_with_ref: true
           tag_with_sha: true # sha-${GITHUB_SHA::7}
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    needs:
+      - run-tests
+      - build-and-release
+    steps:
+      # Check out source code.
+      - name: Check out source code
+        uses: actions/checkout@v2
+      # Set up kubectl.
+      - name: Set up kubectl
+        run: |-
+          curl -sfLo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
