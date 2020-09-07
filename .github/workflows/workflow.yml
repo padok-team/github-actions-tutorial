@@ -33,10 +33,10 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Build and push container image
-            uses: docker/build-push-action@v1
-            with:
-              username: ${{ secrets.DOCKER_USERNAME }}
-              password: ${{ secrets.DOCKER_PASSWORD }}
-              repository: ${{ env.IMAGE_REPOSITORY }}
-              tag_with_ref: true
-              tag_with_sha: true # sha-${GITHUB_SHA::7}
+          uses: docker/build-push-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+            repository: ${{ env.IMAGE_REPOSITORY }}
+            tag_with_ref: true
+            tag_with_sha: true # sha-${GITHUB_SHA::7}
