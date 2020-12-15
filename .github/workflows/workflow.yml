@@ -11,22 +11,20 @@ on:
       - master
 
 jobs:
-  # Run all unit tests.
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      # Check out the pull request's source code.
       - name: Check out source code
         uses: actions/checkout@v2
 
-      # Install Go.
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: "^1.14"
-      - name: Print Go version
-        run: go version
+      - name: Tell secret
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
-      # Run unit tests.
-      - name: Run unit tests
-        run: go test -v ./...
+      - name: update deploy status
+        if: always()
+        uses: unacast/actions-github-deployment-status@0.2
+        with:
+          github_token: ${{ secrets.FEELINGS }}
+          status: ${{ job.status }}
