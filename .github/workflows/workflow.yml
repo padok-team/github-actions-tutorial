@@ -1,0 +1,30 @@
+name: main-worklfow
+
+env: {}
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      - name: Tell secret
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: update deploy status
+        if: always()
+        uses: unacast/actions-github-deployment-status@0.2
+        with:
+          github_token: ${{ secrets.FEELINGS }}
+          status: ${{ job.status }}
