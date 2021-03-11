@@ -1,0 +1,32 @@
+name: main-worklfow
+
+env: {}
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # Run all unit tests.
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out the pull request's source code.
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      # Install Go.
+      - name: Set up Go
+        uses: actions/setup-go@v2-beta
+        with:
+          go-version: "^1.14" # The Go version to download and use.
+      - name: Print Go version
+        run: go version
+
+      # Run unit tests.
+      - name: Run unit tests
+        run: go test -v ./...
