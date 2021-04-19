@@ -1,7 +1,7 @@
 name: main-worklfow
 
 env:
-  IMAGE_REPOSITORY: busser/foobar
+  IMAGE_REPOSITORY: docker288/forgit
 
 on:
   push:
@@ -33,19 +33,19 @@ jobs:
         run: go test -v ./...
 
 # Build and release.
-build-and-release:
-  runs-on: ubuntu-latest
-  steps:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
     # Check out source code.
-    - name: Check out source code
-      uses: actions/checkout@v2
+      - name: Check out source code
+        uses: actions/checkout@v2
 
     # Build and push container image.
-    - name: Build and push container image
-      uses: docker/build-push-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: ${{ env.IMAGE_REPOSITORY }}
-        tag_with_ref: true
-        tag_with_sha: true # sha-${GITHUB_SHA::7}
+      - name: Build and push container image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.IMAGE_REPOSITORY }}
+          tag_with_ref: true
+          tag_with_sha: true # sha-${GITHUB_SHA::7}
