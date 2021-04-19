@@ -18,12 +18,12 @@ func Sequence(length int) ([]string, error) {
 	for i := range seq {
 		n := i + 1
 		switch {
-		case n%3 == 0 && n%5 == 0:
-			seq[i] = "foobar"
+		case n%3 == 0 && n%7 == 0:
+			seq[i] = "foobarr"
 		case n%5 == 0:
-			seq[i] = "bar"
+			seq[i] = "barr"
 		case n%3 == 0:
-			seq[i] = "foo"
+			seq[i] = "foor"
 		default:
 			seq[i] = strconv.Itoa(n)
 		}
