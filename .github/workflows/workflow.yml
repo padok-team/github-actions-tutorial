@@ -49,3 +49,43 @@ jobs:
           repository: ${{ env.IMAGE_REPOSITORY }}
           tag_with_ref: true
           tag_with_sha: true # sha-${GITHUB_SHA::7}
+   # Deploy to Kubernetes.
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    needs:
+      - run-tests
+      - build-and-release
+    steps:
+    # Check out source code.
+      - name: Check out source code
+        uses: actions/checkout@v2
+        
+        # Set up kubectl.
+      - name: Set up kubectl
+        run: |-
+              curl -sfLo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+              chmod +x kubectl
+              sudo mv kubectl /usr/local/bin
+         # Set up Kustomize.
+      - name: Set up Kustomize
+        run: |
+          curl -sfL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz | tar -xzf -
+          sudo mv kustomize /usr/local/bin/
+      
+      # Kustomize Kubernetes resources.
+      - name: Kustomize Kubernetes resources
+        working-directory: ./manifests
+        run: kustomize edit set image REPOSITORY:TAG=${IMAGE_REPOSITORY}:sha-${GITHUB_SHA::7}
+      
+      # Configure kubectl.
+      - name: Configure kubectl
+        run: echo "$KUBECONFIG_VAR"| base64 --decode > kubeconfig.yml
+
+      # Deploy to Kubernetes.
+      - name: Deploy to Kubernetes
+        run: kubectl --kubeconfig kubeconfig.yml apply --kustomize manifests/
+      
+      # Validate deployment.
+      - name: Validate deployment
+        run: kubectl --kubeconfig kubeconfig.yml rollout status --timeout 120s deployment/foobar
