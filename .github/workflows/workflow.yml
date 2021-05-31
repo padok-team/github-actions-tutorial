@@ -1,7 +1,5 @@
 name: main-worklfow
 
-env: {}
-
 on:
   push:
     branches:
