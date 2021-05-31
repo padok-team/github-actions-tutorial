@@ -21,7 +21,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2-beta
         with:
-          go-version: "^1.14" # The Go version to download and use.
+          go-version: "1.16.4" # The Go version to download and use.
       - name: Print Go version
         run: go version
 
