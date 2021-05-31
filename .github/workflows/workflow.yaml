@@ -1,0 +1,23 @@
+name: main-worklfow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2-beta
+        with:
+          go-version: go1.16.4
+      - name: Print Go version
+        run: go version 
+      - name: Run unit tests
+        run: go test -v ./...
+
