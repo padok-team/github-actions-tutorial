@@ -25,7 +25,7 @@ func Sequence(length int) ([]string, error) {
 		case n%3 == 0:
 			seq[i] = "foo"
 		default:
-			seq[i] = strconv.Itoa(n)
+			seq[i] = strconv.Itoa(1)
 		}
 	}
 
