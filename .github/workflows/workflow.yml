@@ -1,0 +1,24 @@
+name: main-workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name:
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2-beta
+        with:
+          go-version: "^1.14"
+
+      - name: Print Go Version
+        run: go version
+      - name: Run unit test
+        run: go test -v ./...
