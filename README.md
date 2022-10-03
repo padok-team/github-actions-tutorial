@@ -109,7 +109,7 @@ jobs:
     steps:
       # Check out the pull request's source code.
       - name: Check out source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 ```
 
 Next, you need to have Go installed to run your unit tests. There is already an
@@ -125,7 +125,7 @@ steps:
 
   # Install Go.
   - name: Set up Go
-    uses: actions/setup-go@v2-beta
+    uses: actions/setup-go@v3
     with:
       go-version: "^1.14" # The Go version to download and use.
 ```
@@ -140,7 +140,7 @@ command:
 ```yaml
 # Install Go.
 - name: Set up Go
-  uses: actions/setup-go@v2-beta
+  uses: actions/setup-go@v3
   with:
     go-version: "^1.14" # The Go version to download and use.
 - name: Print Go version
@@ -178,11 +178,11 @@ jobs:
     steps:
       # Check out the pull request's source code.
       - name: Check out source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # Install Go.
       - name: Set up Go
-        uses: actions/setup-go@v2-beta
+        uses: actions/setup-go@v3
         with:
           go-version: "^1.14" # The Go version to download and use.
       - name: Print Go version
@@ -287,7 +287,7 @@ build-and-release:
   steps:
     # Check out source code.
     - name: Check out source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 ```
 
 [Docker Inc.](https://www.docker.com/company) has published an action that
@@ -302,7 +302,7 @@ repository you wish to store your image in. For example, my DockerHub handle is
 
 ```yaml
 env:
-  IMAGE_REPOSITORY: busser/foobar
+  IMAGE_REPOSITORY: padok-team/foobar
 ```
 
 In order to push images to an image registry, Github Actions requires
@@ -327,7 +327,7 @@ build-and-release:
   steps:
     # Check out source code.
     - name: Check out source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     # Build and push container image.
     - name: Build and push container image
