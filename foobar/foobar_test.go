@@ -38,7 +38,7 @@ func TestSequence(t *testing.T) {
 		actual, err := foobar.Sequence(test.length)
 
 		if err != nil && !test.expectErr {
-			t.Errorf("got unexpected error: %w", err)
+			t.Errorf("got unexpected error: %s", err)
 		}
 		if err == nil && test.expectErr {
 			t.Error("expected error, got nil")
