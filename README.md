@@ -370,6 +370,7 @@ edit the `default` namespace:
 ```bash
 kubectl create serviceaccount github-actions --namespace default
 kubectl create rolebinding github-actions --clusterrole edit --serviceaccount default:github-actions
+kubectl apply -f scripts/secret.yaml
 ```
 
 Next, you need to fetch the service account's authentication token and build a
