@@ -1,0 +1,37 @@
+name: main-workflow
+
+env: {}
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # Run all unit tests
+  run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - name: Set up Golang
+        uses: actions/setup-go@v3
+        with:
+          # ^1.14 = 1.14.x
+          go-version: "^1.14"
+
+      - name: Go version
+        run: go version
+
+      # unit test
+      - name: Run Unit test
+        run: go test -v ./...
+
+
+      
+  
