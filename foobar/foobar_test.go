@@ -13,7 +13,7 @@ func TestSequence(t *testing.T) {
 		expectErr bool
 	}{
 		{
-			length:    5,
+			length:    7,
 			expected:  []string{"1", "2", "foo", "4", "bar"},
 			expectErr: false,
 		},
