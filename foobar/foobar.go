@@ -20,7 +20,7 @@ func Sequence(length int) ([]string, error) {
 		switch {
 		case n%3 == 0 && n%5 == 0:
 			seq[i] = "foobar"
-		case n%7 == 0:
+		case n%5 == 0:
 			seq[i] = "bar"
 		case n%3 == 0:
 			seq[i] = "foo"
