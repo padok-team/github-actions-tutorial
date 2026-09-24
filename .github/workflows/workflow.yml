@@ -1,5 +1,7 @@
 name: main-worklfow
 
+env: {}
+
 on:
   push:
     branches:
@@ -17,22 +19,14 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
-steps:
-  # Check out the pull request's source code.
-  - name: Check out source code
-    uses: actions/checkout@v2
+      # Install Go.
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "^1.14" # The Go version to download and use.
+      - name: Print Go version
+        run: go version
 
-  # Install Go.
-  - name: Set up Go
-    uses: actions/setup-go@v3
-    with:
-      go-version: "^1.14" # The Go version to download and use.
-  
-  - name: Print Go version
-    run: go version
-
-  # Run unit tests.
-  - name: Run unit tests
-    run: go test -v ./...
-
-    
+      # Run unit tests.
+      - name: Run unit tests
+        run: go test -v ./...
